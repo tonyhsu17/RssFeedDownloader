@@ -4,6 +4,7 @@
  <groupId>com.ikersaro</groupId>
  <artifactId>rss-feed-downloader</artifactId>
  <version>1.0</version>
+ <name>RssFeedDownloader</name>
  <build>
   <sourceDirectory>src/main/java</sourceDirectory>
   <plugins>
@@ -15,10 +16,22 @@
      <target>1.8</target>
     </configuration>
    </plugin>
+   <plugin>
+    <!--mvn clean compile assembly:single-->
+    <artifactId>maven-assembly-plugin</artifactId>
+    <configuration>
+     <archive>
+      <manifest>
+       <mainClass>org.tonyhsu17.RssFeedDownloader</mainClass>
+      </manifest>
+     </archive>
+     <descriptorRefs>
+      <descriptorRef>jar-with-dependencies</descriptorRef>
+     </descriptorRefs>
+    </configuration>
+   </plugin>
   </plugins>
  </build>
- <name>RssFeedDownloader</name>
-
  <dependencies>
   <dependency>
    <groupId>com.rometools</groupId>
