@@ -3,6 +3,7 @@ package org.tonyhsu17;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.List;
 
@@ -45,25 +46,31 @@ public class RunHeadlessMode implements Logger {
             for(SyndEntry entry : entries) {
                 String downloadLink = entry.getLink();
                 if(!history.isInHistory(downloadLink)) {
-                    URL url = handleRedirects(downloadLink);
-                    // download file
-                    try {
-                        File f = new File(destination + File.separator + System.nanoTime() + ".torrent");
-                        FileUtils.copyURLToFile(url, f, 20000, 20000);
-                        info("Saving: " + downloadLink + " to " + f.getName());
-                        history.add(downloadLink);
-                    }
-                    catch (IOException e) {
-                        error(e);
+                    for(int i = 0; i < 12; i++) {
+                        URL url = handleRedirects(downloadLink);
+                        // download file
+                        try {
+                            File f = new File(destination + File.separator + System.nanoTime() + ".torrent");
+                            FileUtils.copyURLToFile(url, f, 10000, 20000);
+                            info("Saving: " + downloadLink + " to " + f.getName());
+                            history.add(downloadLink);
+                            break;
+                        }
+                        catch (SocketTimeoutException e) {
+                            // retry again after 5 min
+                            Thread.sleep(1000 * 60 * 5); // 5 minutes
+                        }
+                        catch (IOException e) {
+                            error(e);
+                        }
                     }
                 }
             }
             history.save();
         }
-        catch (IllegalArgumentException | FeedException e) {
+        catch (IllegalArgumentException | FeedException | InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
     // https://www.mkyong.com/java/java-httpurlconnection-follow-redirect-example/
