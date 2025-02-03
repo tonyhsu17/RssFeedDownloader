@@ -3,6 +3,9 @@ import groovy.json.JsonSlurper
 version = '1.0'
 
 node('maven') {
+    withCredentials([dockerCert(credentialsId: 'docker-cert', variable: 'DOCKER_CERT_PATH')]) {
+        sh "cp -r \'$DOCKER_CERT_PATH\' /root/.docker/"
+    }
     stage('rss downloader') {
         checkout scm
         sh "docker build -t org.tonyhsu17.rss-downloader:${version} ."
