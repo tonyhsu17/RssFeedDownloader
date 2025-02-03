@@ -1,4 +1,4 @@
-FROM docker.io/maven:eclipse-temurin as builder
+FROM docker.io/maven:eclipse-temurin AS builder
 WORKDIR /app
 COPY . .
 RUN mvn clean compile assembly:single
