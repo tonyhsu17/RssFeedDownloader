@@ -9,7 +9,7 @@ node('maven') {
     stage('rss downloader') {
         checkout scm
         sh "docker build -t org.tonyhsu17.rss-downloader:${version} ."
-        withCredentials([text(credentialsId: 'rss-url', variable: 'RSS_URL')]) {
+        withCredentials([string(credentialsId: 'rss-url', variable: 'RSS_URL')]) {
             sh "docker run org.tonyhsu17.rss-downloader:${version} "
 //            sh script: """
 //                mvn clean compile assembly:single
