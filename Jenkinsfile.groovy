@@ -15,9 +15,9 @@ node('maven') {
         sh "docker build -t ${repoName}/${containerName}:${version} ."
         sh "docker run ${repoName}/${containerName}:${version}"
         sh "docker push ${repoName}/${containerName}:${version}"
-        sh "docker tag ${repoName}/${containerName}:${version} ${repoName}/${containerName}:latest"
         catchError(buildResult: 'SUCCESS', message: 'Skipped pushing to stable') {
             input 'Push to stable?'
+            sh "docker tag ${repoName}/${containerName}:${version} ${repoName}/${containerName}:stable"
             sh "docker push ${repoName}/${containerName}:stable"
         }
     }
