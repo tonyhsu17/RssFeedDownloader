@@ -1,6 +1,6 @@
 import groovy.json.JsonSlurper
 
-repoName = "org.tonyhsu17"
+repoName = "tonyhsu17"
 containerName = 'rss-feed-downloader'
 version = '1.0'
 
