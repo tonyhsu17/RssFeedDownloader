@@ -8,9 +8,11 @@ node('maven') {
     }
     stage('rss downloader') {
         checkout scm
+        def des = '/shares/unsorted-downloads/watch'
         sh "docker build -t org.tonyhsu17.rss-downloader:${version} ."
         withCredentials([string(credentialsId: 'rss-url', variable: 'RSS_URL')]) {
-            sh "export RSS_DES=/shares/unsorted-downloads/watch; docker run org.tonyhsu17.rss-downloader:${version} "
+            sh "docker run org.tonyhsu17.rss-downloader:${version} " +
+                    "-e RSS_URL=${RSS_URL} -e RSS_DES=${des}"
 //            sh script: """
 //                mvn clean compile assembly:single
 //                ls target
