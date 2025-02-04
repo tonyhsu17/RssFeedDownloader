@@ -1,23 +1,24 @@
 import groovy.json.JsonSlurper
 
+repoName = "org.tonyhsu17/"
+containerName = 'rss-feed-downloader'
 version = '1.0'
 
 node('maven') {
-    withCredentials([dockerCert(credentialsId: 'docker-cert', variable: 'DOCKER_CERT_PATH')]) {
+    withCredentials([dockerCert(credentialsId: 'docker-cert', variable: 'DOCKER_CERT_PATH'),
+                     usernamePassword(credentialsId: 'docker-login', passwordVariable: 'pass', usernameVariable: 'username')]) {
         sh "cp -r \'$DOCKER_CERT_PATH\' /root/.docker/"
+        sh "echo $pass | docker login --username $username --password-stdin"
     }
-    stage('rss downloader') {
+    stage('dockerize') {
         checkout scm
-        def des = '/shares/unsorted-downloads/watch'
-        sh "docker build -t org.tonyhsu17.rss-downloader:${version} ."
-        withCredentials([string(credentialsId: 'rss-url', variable: 'RSS_URL')]) {
-            sh "docker run -e RSS_URL=${RSS_URL} -e RSS_DES=${des} " +
-                    "org.tonyhsu17.rss-downloader:${version}"
-//            sh script: """
-//                mvn clean compile assembly:single
-//                ls target
-//                java -jar target/rss-feed-downloader-1.0-jar-with-dependencies.jar -d \"/shares/unsorted-downloads/watch\" -u \"${RSS_URL}\"
-//                """
+        sh "docker build -t ${repoName}/${containerName}:${version} ."
+        sh "docker run ${repoName}/${containerName}:${version}"
+        sh "docker push ${repoName}/${containerName}:${version}"
+        sh "docker tag ${repoName}/${containerName}:${version} ${repoName}/${containerName}:latest"
+        catchError(buildResult: 'SUCCESS', message: 'Skipped pushing to stable') {
+            input 'Push to stable?'
+            sh "docker push ${repoName}/${containerName}:stable"
         }
     }
 }
