@@ -1,18 +1,22 @@
-import groovy.json.JsonSlurper
-
-repoName = "tonyhsu17"
-containerName = 'rss-feed-downloader'
-version = '1.0'
+properties([
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '10', numToKeepStr: '10'))
+])
 
 node('maven') {
-    withCredentials([dockerCert(credentialsId: 'docker-cert', variable: 'DOCKER_CERT_PATH'),
-                     usernamePassword(credentialsId: 'docker-login', passwordVariable: 'pass', usernameVariable: 'username')]) {
-        sh "cp -r \'$DOCKER_CERT_PATH\' /root/.docker/"
-        sh "echo $pass | docker login --username $username --password-stdin"
+    stage('docker setup') {
+        withCredentials([dockerCert(credentialsId: 'docker-cert', variable: 'DOCKER_CERT_PATH'),
+                         usernamePassword(credentialsId: 'docker-login', passwordVariable: 'pass', usernameVariable: 'username')]) {
+            sh "cp -r \'$DOCKER_CERT_PATH\' /root/.docker/"
+            sh "echo $pass | docker login --username $username --password-stdin"
+        }
     }
-    stage('dockerize') {
+    stage('dockerize & push') {
         checkout scm
-        sh "docker build -t ${repoName}/${containerName}:${version} ."
+        def repoName = "tonyhsu17"
+        def containerName = sh script: 'mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout', returnStdout: true
+        def version = sh script: 'mvn help:evaluate -Dexpression=project.version -q -DforceStdout', returnStdout: true
+
+        sh "docker build -t ${repoName}/${containerName}:${version} --build-arg JAR_NAME=${containerName} --build-arg VERSION=${version} ."
         sh "docker run ${repoName}/${containerName}:${version}"
         sh "docker push ${repoName}/${containerName}:${version}"
         try {

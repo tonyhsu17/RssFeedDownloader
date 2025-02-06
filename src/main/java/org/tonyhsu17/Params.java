@@ -16,7 +16,5 @@ public class Params {
     public static final Parameter I = new Parameter("i", true, "cron time");
     public static final Parameter ONCE = new Parameter("once", false, "run once, overrides cron time");
 
-    public static Parameter[] getParams() {
-        return new Parameter[] {D, U, I, ONCE};
-    }
+    public static Parameter[] params = {D, U, I, ONCE};
 }

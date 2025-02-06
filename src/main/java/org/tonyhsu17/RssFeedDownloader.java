@@ -18,7 +18,7 @@ public class RssFeedDownloader implements Logger {
 
     public RssFeedDownloader(String[] args) {
         try {
-            CommandLine cmd = CommandLineArgs.getCommandLine(Params.getParams(), args);
+            CommandLine cmd = CommandLineArgs.getCommandLine(Params.params, args);
             String url = getOptionValue(cmd, Params.U, "RSS_URL", "");
             String dest = getOptionValue(cmd, Params.D, "RSS_DES", "");
             hasCron = !cmd.hasOption(Params.ONCE.opt()) || Boolean.parseBoolean(
