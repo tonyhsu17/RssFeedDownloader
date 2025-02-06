@@ -77,4 +77,8 @@ public class RssFeedDownloader implements Logger {
             }
         }
     }
+
+    public static void main(String[] args) throws IOException {
+        new RssFeedDownloader(args).run();
+    }
 }
