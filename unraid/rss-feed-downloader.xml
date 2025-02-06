@@ -22,8 +22,8 @@
     <DonateLink/>
     <Requires/>
     <Config Name="RSS_URL" Target="RSS_URL" Default="" Mode="" Description="Url to read from" Type="Variable" Display="always" Required="true" Mask="false"></Config>
-    <Config Name="RSS_USE_CRON" Target="RSS_USE_CRON" Default="true" Mode="" Description="Keep job running, set to false for single run" Type="Variable" Display="always" Required="false" Mask="false">true</Config>
-    <Config Name="RSS_CRON_INTERVAL" Target="RSS_CRON_INTERVAL" Default="600" Mode="" Description="Time in seconds" Type="Variable" Display="always" Required="false" Mask="false">600</Config>
-    <Config Name="Destination" Target="/data" Default="/data" Mode="rw" Description="path to mount, don't change container path" Type="Path" Display="always" Required="false" Mask="false"></Config>
-    <Config Name="RSS_DES" Target="RSS_DES" Default="/data" Mode="" Description="destination within container" Type="Variable" Display="advanced" Required="false" Mask="false">/data</Config>
+    <Config Name="RSS_USE_CRON" Target="RSS_USE_CRON" Default="true" Mode="" Description="Keep job running, set to false for single run" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+    <Config Name="RSS_CRON_INTERVAL" Target="RSS_CRON_INTERVAL" Default="600" Mode="" Description="Time in seconds" Type="Variable" Display="always" Required="false" Mask="false"></Config>
+    <Config Name="Destination" Target="/data" Default="" Mode="rw" Description="path to mount, don't change container path" Type="Path" Display="always" Required="true" Mask="false"></Config>
+    <Config Name="RSS_DES" Target="RSS_DES" Default="/data" Mode="" Description="destination within container" Type="Variable" Display="advanced" Required="true" Mask="false"></Config>
 </Container>
