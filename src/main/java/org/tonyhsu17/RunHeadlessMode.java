@@ -5,7 +5,12 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.tonyhsu17.utilities.HistoryLog;
@@ -52,6 +57,12 @@ public class RunHeadlessMode implements Logger {
                         try {
                             File f = new File(destination + File.separator + System.nanoTime() + ".torrent");
                             FileUtils.copyURLToFile(url, f, 10000, 20000);
+                            try {
+                                Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rw-rw-rw-");
+                                Files.setPosixFilePermissions(Paths.get(f.getPath()), permissions);
+                            } catch (IOException e) {
+                                System.err.println("Error setting POSIX permissions: " + e.getMessage());
+                            }
                             info("Saving: " + downloadLink + " to " + f.getName());
                             history.add(downloadLink);
                             break;
