@@ -3,6 +3,7 @@ package org.tonyhsu17;
 import java.io.IOException;
 import java.util.Optional;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.tonyhsu17.utilities.Logger;
@@ -21,8 +22,7 @@ public class RssFeedDownloader implements Logger {
             CommandLine cmd = CommandLineArgs.getCommandLine(Params.params, args);
             String url = getOptionValue(cmd, Params.U, "RSS_URL", "");
             String dest = getOptionValue(cmd, Params.D, "RSS_DES", "");
-            hasCron = !cmd.hasOption(Params.ONCE.opt()) || Boolean.parseBoolean(
-                Optional.ofNullable(System.getenv("RSS_USE_CRON")).orElse("false"));
+            hasCron = Boolean.parseBoolean(getOptionValue(cmd, Params.C, "RSS_USE_CRON", "false"));
             cronInterval = Integer.parseInt(getOptionValue(cmd, Params.I, "RSS_CRON_INTERVAL", "10"));
             if(!url.isEmpty() && !dest.isEmpty()) {
                 headless = new RunHeadlessMode(url, dest);
