@@ -69,7 +69,8 @@ public class RssFeedDownloader implements Logger {
             while(true) {
                 headless.run();
                 try {
-                    Thread.sleep(cronInterval);
+                    info("Sleeping...");
+                    Thread.sleep(cronInterval*1000);
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();
